@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>California Housing Price Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="card">
+    <h2>California House Price Predictor</h2>
+
+    <form id="predictForm">
+
+        <label>Longitude</label>
+        <input type="number" step="any" name="longitude" required>
+
+        <label>Latitude</label>
+        <input type="number" step="any" name="latitude" required>
+
+        <label>Housing Median Age</label>
+        <input type="number" step="any" name="housing_median_age" required>
+
+        <label>Total Rooms</label>
+        <input type="number" step="any" name="total_rooms" required>
+
+        <label>Total Bedrooms</label>
+        <input type="number" step="any" name="total_bedrooms" required>
+
+        <label>Population</label>
+        <input type="number" step="any" name="population" required>
+
+        <label>Households</label>
+        <input type="number" step="any" name="households" required>
+
+        <label>Median Income</label>
+        <input type="number" step="any" name="median_income" required>
+
+        <label>Ocean Proximity</label>
+        <select name="ocean_proximity" required>
+            <option value="">Select</option>
+            <option value="INLAND">INLAND</option>
+            <option value="1H OCEAN">&lt;1H OCEAN</option>
+            <option value="NEAR OCEAN">NEAR OCEAN</option>
+            <option value="NEAR BAY">NEAR BAY</option>
+            <option value="ISLAND">ISLAND</option>
+        </select>
+
+        <button type="submit">Predict Price</button>
+    </form>
+
+    <div class="output" id="result"></div>
+</div>
+
+<script>
+document.getElementById("predictForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    const response = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    document.getElementById("result").innerText =
+        "Predicted House Value: $" + result.prediction.toFixed(2);
+});
+</script>
+
+</body>
+</html>
